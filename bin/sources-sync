@@ -13,9 +13,6 @@ def parse_args
   opts = Optimist.options do
     opt :queue_host, "Hostname of the Platform's kafka queue", :type => :string, :required => ENV["QUEUE_HOST"].nil?, :default => ENV["QUEUE_HOST"]
     opt :queue_port, "Port of the Platform's kafka queue", :type => :int, :required => false, :default => (ENV["QUEUE_PORT"] || 9092).to_i
-    opt :topological_inventory_api, "Hostname of the Topological Inventory route", :type => :string,
-      :required => ENV["TOPOLOGICAL_INVENTORY_API_SERVICE_HOST"].nil?,
-      :default  => "http://#{ENV["TOPOLOGICAL_INVENTORY_API_SERVICE_HOST"]}:#{ENV["TOPOLOGICAL_INVENTORY_API_SERVICE_PORT"]}"
   end
 
   opts
@@ -23,9 +20,9 @@ end
 
 args = parse_args
 
-api_uri = URI(args[:topological_inventory_api])
-TopologicalInventoryApiClient.configure.scheme = api_uri.scheme || "http"
-TopologicalInventoryApiClient.configure.host   = "#{api_uri.host}:#{api_uri.port}"
+require "topological_inventory/core/ar_helper"
+TopologicalInventory::Core::ArHelper.database_yaml_path = Pathname.new(__dir__).join("../config/database.yml")
+TopologicalInventory::Core::ArHelper.load_environment!
 
 sources_sync = TopologicalInventory::SourcesSync.new(args[:queue_host], args[:queue_port])
 sources_sync.run

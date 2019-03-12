@@ -3,7 +3,6 @@ require "json"
 require "manageiq-messaging"
 require 'rest_client'
 require "topological_inventory/logging"
-require "topological_inventory-api-client"
 
 module TopologicalInventory
   class SourcesSync
@@ -42,13 +41,15 @@ module TopologicalInventory
 
     def process_message(message)
       logger.info("#{message.message}: #{message.payload}")
+      case message.message
+      when "Source.create"
+        Source.create!(message.payload.except("id"))
+      when "Source.destroy"
+        Source.find_by(:uid => message.payload["uid"]).destroy
+      end
     rescue => e
       logger.error(e.message)
       logger.error(e.backtrace.join("\n"))
-    end
-
-    def api_client
-      TopologicalInventoryApiClient::DefaultApi.new
     end
 
     def default_messaging_opts

@@ -11,10 +11,10 @@ gem 'manageiq-messaging'
 gem "more_core_extensions"
 gem "rest-client"
 
-gem "topological_inventory-api-client", :git => "https://github.com/ManageIQ/topological_inventory-api-client-ruby", :branch => "master"
+gem "topological_inventory-core", :git => "https://github.com/ManageIQ/topological_inventory-core", :branch => "master"
 
 group :development, :test do
-  gem "rspec"
+  gem "rspec-rails", "~>3.8"
   gem "simplecov"
   gem "webmock"
 end
