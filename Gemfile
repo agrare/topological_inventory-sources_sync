@@ -5,10 +5,10 @@ require File.join(Bundler::Plugin.index.load_paths("bundler-inject")[0], "bundle
 
 gem "activesupport"
 gem "concurrent-ruby"
-gem "optimist"
 gem "manageiq-loggers", "~> 0.1.0"
-gem 'manageiq-messaging'
+gem "manageiq-messaging"
 gem "more_core_extensions"
+gem "optimist"
 gem "rest-client"
 
 gem "topological_inventory-core", :git => "https://github.com/ManageIQ/topological_inventory-core", :branch => "master"

@@ -11,7 +11,7 @@ RSpec.describe TopologicalInventory::SourcesSync do
     context "source create event" do
       let(:event) { "Source.create" }
       let(:patyload) do
-        {"name"=>"AWS", "source_type_id"=>"1", "tenant_id"=>"1", "uid"=>"12c48843-0948-4539-b420-089dd1bec280", "id"=>"1"}
+        {"name" => "AWS", "source_type_id" => "1", "tenant_id" => "1", "uid" => "12c48843-0948-4539-b420-089dd1bec280", "id" => "1"}
       end
     end
 

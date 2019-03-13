@@ -11,8 +11,8 @@ module TopologicalInventory
     attr_reader :source, :sns_topic
 
     def initialize(queue_host, queue_port)
-      self.queue_host                = queue_host
-      self.queue_port                = queue_port
+      self.queue_host = queue_host
+      self.queue_port = queue_port
     end
 
     def run
