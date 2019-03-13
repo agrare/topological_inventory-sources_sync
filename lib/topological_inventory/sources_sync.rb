@@ -43,13 +43,21 @@ module TopologicalInventory
       logger.info("#{message.message}: #{message.payload}")
       case message.message
       when "Source.create"
-        Source.create!(message.payload.except("id"))
+        Source.create!(
+          :uid    => message.payload["uid"],
+          :tenant => tenants_by_external_tenant(message.payload["tenant"]),
+        )
       when "Source.destroy"
         Source.find_by(:uid => message.payload["uid"]).destroy
       end
     rescue => e
       logger.error(e.message)
       logger.error(e.backtrace.join("\n"))
+    end
+
+    def tenants_by_external_tenant(external_tenant)
+      @tenants_by_external_tenant ||= {}
+      @tenants_by_external_tenant[external_tenant] ||= Tenant.find_by(:external_tenant => external_tenant)
     end
 
     def default_messaging_opts
