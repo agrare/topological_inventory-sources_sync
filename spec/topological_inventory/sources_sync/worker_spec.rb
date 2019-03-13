@@ -1,10 +1,10 @@
 require "manageiq-messaging"
-require "topological_inventory/sources_sync"
+require "topological_inventory/sources_sync/worker"
 
-RSpec.describe TopologicalInventory::SourcesSync do
+RSpec.describe TopologicalInventory::SourcesSync::Worker do
   context "#process_message" do
     let(:sources_sync) do
-      TopologicalInventory::SourcesSync.new("localhost", 9092)
+      described_class.new("localhost", 9092)
     end
     let(:message) { ManageIQ::Messaging::ReceivedMessage.new(nil, event, payload, nil) }
 
