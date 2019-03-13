@@ -57,7 +57,7 @@ module TopologicalInventory
 
     def tenants_by_external_tenant(external_tenant)
       @tenants_by_external_tenant ||= {}
-      @tenants_by_external_tenant[external_tenant] ||= Tenant.find_by(:external_tenant => external_tenant)
+      @tenants_by_external_tenant[external_tenant] ||= Tenant.find_or_create_by(:external_tenant => external_tenant)
     end
 
     def default_messaging_opts
