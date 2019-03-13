@@ -14,7 +14,8 @@ gem "rest-client"
 gem "topological_inventory-core", :git => "https://github.com/ManageIQ/topological_inventory-core", :branch => "master"
 
 group :development, :test do
-  gem "rspec-rails", "~>3.8"
+  gem "rake"
+  gem "rspec-rails"
   gem "simplecov"
   gem "webmock"
 end
