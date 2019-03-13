@@ -33,7 +33,7 @@ module TopologicalInventory
 
       private
 
-      attr_accessor :log, :queue_host, :queue_port
+      attr_accessor :queue_host, :queue_port
 
       def process_message(message)
         logger.info("#{message.message}: #{message.payload}")
