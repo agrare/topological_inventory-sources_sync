@@ -13,6 +13,9 @@ module TopologicalInventory
 
       def run
         logger.info("Starting Sources sync...")
+
+        initial_sources_sync
+
         client = ManageIQ::Messaging::Client.open(default_messaging_opts.merge(:host => queue_host, :port => queue_port))
 
         queue_opts = {
@@ -35,6 +38,33 @@ module TopologicalInventory
 
       attr_accessor :queue_host, :queue_port
 
+      def initial_sources_sync
+        sources_by_uid = sources_api_client.list_sources.data.index_by(&:uid)
+
+        current_source_uids  = sources_by_uid.keys
+        previous_source_uids = Source.pluck(:uid)
+
+        sources_to_delete = previous_source_uids - current_source_uids
+        sources_to_create = current_source_uids - previous_source_uids
+
+        sources_to_delete.each do |source_uid|
+          logger.info("Deleting source [#{source_uid}]")
+
+          Source.find_by(:uid => source_uid).destroy
+        end
+
+        sources_to_create.each do |source_uid|
+          logger.info("Creating source [#{source_uid}]")
+
+          source = sources_by_uid[source_uid]
+          tenant = tenants_by_external_tenant(source.tenant)
+          Source.create!(
+            :tenant => tenant,
+            :uid    => source_uid
+          )
+        end
+      end
+
       def process_message(message)
         logger.info("#{message.message}: #{message.payload}")
         case message.message
@@ -54,6 +84,10 @@ module TopologicalInventory
       def tenants_by_external_tenant(external_tenant)
         @tenants_by_external_tenant ||= {}
         @tenants_by_external_tenant[external_tenant] ||= Tenant.find_or_create_by(:external_tenant => external_tenant)
+      end
+
+      def sources_api_client
+        SourcesApiClient::DefaultApi.new
       end
 
       def default_messaging_opts

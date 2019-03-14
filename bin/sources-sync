@@ -12,7 +12,8 @@ def parse_args
   require 'optimist'
   opts = Optimist.options do
     opt :queue_host, "Hostname of the Platform's kafka queue", :type => :string, :default => ENV["QUEUE_HOST"] || "localhost"
-    opt :queue_port, "Port of the Platform's kafka queue",     :type => :int, :default => (ENV["QUEUE_PORT"] || 9092).to_i
+    opt :queue_port, "Port of the Platform's kafka queue",     :type => :int,    :default => (ENV["QUEUE_PORT"] || 9092).to_i
+    opt :sources_api, "URL of the sources service api",        :type => :string, :default => ENV["SOURCES_API"] || "http://localhost:3000/api/v0.1"
   end
 
   opts
@@ -23,6 +24,16 @@ args = parse_args
 require "topological_inventory/core/ar_helper"
 TopologicalInventory::Core::ArHelper.database_yaml_path = Pathname.new(__dir__).join("../config/database.yml")
 TopologicalInventory::Core::ArHelper.load_environment!
+
+require "sources-api-client"
+sources_api_uri = URI(args[:sources_api])
+
+SourcesApiClient.configure do |config|
+  config.scheme    = sources_api_uri.scheme || "http"
+  config.host      = "#{sources_api_uri.host}:#{sources_api_uri.port}"
+  config.base_path = sources_api_uri.path if sources_api_uri.path.present?
+  config.logger    = TopologicalInventory::SourcesSync.logger
+end
 
 sources_sync = TopologicalInventory::SourcesSync::Worker.new(args[:queue_host], args[:queue_port])
 sources_sync.run

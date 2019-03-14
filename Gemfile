@@ -12,6 +12,7 @@ gem "optimist"
 gem "rest-client"
 
 gem "topological_inventory-core", :git => "https://github.com/ManageIQ/topological_inventory-core", :branch => "master"
+gem "sources-api-client",         :git => "https://github.com/agrare/sources-api-client-ruby", :branch => "master"
 
 group :development, :test do
   gem "rake"
