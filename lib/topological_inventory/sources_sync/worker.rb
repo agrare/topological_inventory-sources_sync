@@ -47,11 +47,8 @@ module TopologicalInventory
         sources_to_delete = previous_source_uids - current_source_uids
         sources_to_create = current_source_uids - previous_source_uids
 
-        sources_to_delete.each do |source_uid|
-          logger.info("Deleting source [#{source_uid}]")
-
-          Source.find_by(:uid => source_uid).destroy
-        end
+        logger.info("Deleting sources [#{sources_to_delete.join("\n")}]") if sources_to_delete.any?
+        Source.where(:uid => sources_to_delete).destroy_all
 
         sources_to_create.each do |source_uid|
           logger.info("Creating source [#{source_uid}]")
