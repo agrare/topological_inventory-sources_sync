@@ -2,6 +2,9 @@ require "manageiq-messaging"
 require "topological_inventory/sources_sync/worker"
 
 RSpec.describe TopologicalInventory::SourcesSync::Worker do
+  context "#initial_sources_sync" do
+  end
+
   context "#process_message" do
     let(:sources_sync) do
       described_class.new("localhost", 9092)
@@ -21,7 +24,7 @@ RSpec.describe TopologicalInventory::SourcesSync::Worker do
           expect(Source.count).to eq(1)
           expect(Source.first.uid).to eq(payload["uid"])
           expect(Tenant.count).to eq(1)
-          expect(Tenant.first.external_tenant).to eq(payload["external_tenant"])
+          expect(Tenant.first.external_tenant).to eq(payload["tenant"])
         end
       end
 
@@ -34,7 +37,7 @@ RSpec.describe TopologicalInventory::SourcesSync::Worker do
           expect(Source.count).to eq(1)
           expect(Source.first.uid).to eq(payload["uid"])
           expect(Tenant.count).to eq(1)
-          expect(Tenant.first.external_tenant).to eq(payload["external_tenant"])
+          expect(Tenant.first.external_tenant).to eq(payload["tenant"])
         end
       end
     end
