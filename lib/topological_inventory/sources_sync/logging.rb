@@ -1,7 +1,7 @@
 require "manageiq/loggers"
 
 module TopologicalInventory
-  module SourcesSync
+  class SourcesSync
     class << self
       attr_writer :logger
     end
